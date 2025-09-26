@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DafnyComp: Benchmarking Compositional Formal Verification</title>
+    <meta name="description" content="DafnyComp: Local Success Does Not Compose - Benchmarking Large Language Models for Compositional Formal Verification">
+    <meta name="keywords" content="formal verification, LLM, Dafny, compositional reasoning, benchmark">
+    <meta name="author" content="Xu Xu, Xin Li, Xingwei Qu, Jie Fu, Binhang Yuan">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="DafnyComp: Benchmarking Compositional Formal Verification">
+    <meta property="og:description" content="The first benchmark explicitly designed to evaluate compositional specification generation for formal verification. Reveals a 92% performance gap between syntax and verification success in LLMs.">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="DafnyComp: Benchmarking Compositional Formal Verification">
+    <meta property="twitter:description" content="Revealing fundamental limitations in LLM compositional reasoning for formal verification">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-check-double"></i>
+                <span>DafnyComp</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#abstract" class="nav-link">Abstract</a></li>
+                <li><a href="#benchmark" class="nav-link">Benchmark</a></li>
+                <li><a href="#results" class="nav-link">Results</a></li>
+                <li><a href="#insights" class="nav-link">Insights</a></li>
+                <li><a href="#download" class="nav-link">Download</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-particles"></div>
+        <div class="container">
+            <div class="hero-content">
+                <!-- <div class="hero-badge">
+                    <i class="fas fa-trophy"></i>
+                    <span>ICLR 2026</span>
+                </div> -->
+                <h1 class="hero-title">
+                    <span class="gradient-text">Local Success</span> Does Not
+                    <span class="gradient-text">Compose</span>
+                </h1>
+                <h2 class="hero-subtitle">
+                    Benchmarking Large Language Models for Compositional Formal Verification
+                </h2>
+                <div class="hero-authors">
+                    <div class="authors-container">
+                        <div class="author-item">
+                            <a href="https://openreview.net/profile?id=~Xu_Xu3" class="author-link" target="_blank">
+                                <span class="author-name">Xu Xu</span>
+                                <span class="author-affiliation">HKUST</span>
+                            </a>
+                        </div>
+                        <div class="author-item">
+                            <a href="https://lixin.ai" class="author-link" target="_blank">
+                                <span class="author-name">Xin Li</span>
+                                <span class="author-affiliation">NTU</span>
+                            </a>
+                        </div>
+                        <div class="author-item">
+                            <a href="https://scholar.google.com/citations?user=hty-MWIAAAAJ&hl=zh-CN" class="author-link" target="_blank">
+                                <span class="author-name">Xingwei Qu</span>
+                                <span class="author-affiliation">University of Manchester</span>
+                            </a>
+                        </div>
+                        <div class="author-item">
+                            <a href="https://bigaidream.github.io/" class="author-link" target="_blank">
+                                <span class="author-name">Jie Fu</span>
+                                <span class="author-affiliation">Shanghai AI Lab</span>
+                            </a>
+                        </div>
+                        <div class="author-item">
+                            <a href="https://binhangyuan.github.io/site/" class="author-link" target="_blank">
+                                <span class="author-name">Binhang Yuan</span>
+                                <span class="author-affiliation">HKUST</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <p class="hero-description">
+                    The first benchmark explicitly designed to evaluate LLMs on compositional specification generation,
+                    revealing a striking 92% performance gap between syntax correctness and verification success.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">300</span>
+                        <span class="stat-label">Verified Programs</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">13</span>
+                        <span class="stat-label">SOTA Models</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">92%</span>
+                        <span class="stat-label">Performance Gap</span>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <a href="assets/iclr2026_conference.pdf" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-file-pdf"></i>
+                        Read Paper
+                    </a>
+                    <a href="#benchmark" class="btn btn-secondary">
+                        <i class="fas fa-database"></i>
+                        Explore Benchmark
+                    </a>
+                    <a href="https://github.com/your-repo/dafnycomp" class="btn btn-outline" target="_blank">
+                        <i class="fab fa-github"></i>
+                        GitHub
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="chart-container">
+                    <div class="performance-chart">
+                        <div class="chart-title">The Compositional Gap</div>
+                        <div class="chart-bars">
+                            <div class="bar-group">
+                                <div class="bar syntax" data-value="99"></div>
+                                <label>Syntax Correctness</label>
+                                <span class="percentage">99%</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar verification" data-value="7"></div>
+                                <label>Verification Success</label>
+                                <span class="percentage">7%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract Section -->
+    <section id="abstract" class="section">
+        <div class="container">
+            <h2 class="section-title">Abstract</h2>
+            <div class="abstract-content">
+                <div class="abstract-text">
+                    <p>
+                        Despite rapid advances in code generation, current Large Language Models (LLMs) still lack an essential capability
+                        for reliable and verifiable code generation: <strong>compositional reasoning</strong> across multi-function programs.
+                    </p>
+                    <p>
+                        To explore this potential and important gap, we introduce <strong>DafnyComp</strong>, a benchmark designed to
+                        systematically evaluate LLMs on the generation of compositional specifications in Dafny. Unlike prior benchmarks
+                        that primarily target single-function annotation, DafnyComp focuses on programs composed of multiple interacting
+                        functions with necessary data dependencies.
+                    </p>
+                    <div class="key-findings">
+                        <h3>Key Findings</h3>
+                        <ul>
+                            <li><strong>Syntax vs. Semantics Gap:</strong> 99% syntax correctness but only 7% verification success</li>
+                            <li><strong>Universal Failure:</strong> All 13 evaluated SOTA models show similar compositional breakdown</li>
+                            <li><strong>Three Failure Modes:</strong> Specification fragility (39.2%), implementation-proof misalignment (21.7%), and reasoning instability (14.1%)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="abstract-visual">
+                    <div class="failure-modes">
+                        <div class="failure-mode">
+                            <div class="failure-icon">
+                                <i class="fas fa-chain-broken"></i>
+                            </div>
+                            <h4>Specification Fragility</h4>
+                            <p>39.2%</p>
+                            <span>Contract propagation failures</span>
+                        </div>
+                        <div class="failure-mode">
+                            <div class="failure-icon">
+                                <i class="fas fa-unlink"></i>
+                            </div>
+                            <h4>Implementation-Proof Misalignment</h4>
+                            <p>21.7%</p>
+                            <span>Independent generation pathways</span>
+                        </div>
+                        <div class="failure-mode">
+                            <div class="failure-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h4>Reasoning Instability</h4>
+                            <p>14.1%</p>
+                            <span>Inductive chain breakdown</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benchmark Section -->
+    <section id="benchmark" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">The DafnyComp Benchmark</h2>
+            <div class="benchmark-overview">
+                <div class="benchmark-stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3>300 Programs</h3>
+                        <p>Mechanically verified multi-function Dafny programs</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <h3>2-5 Functions</h3>
+                        <p>Chain-based compositions with data dependencies</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <h3>15 Categories</h3>
+                        <p>Spanning dynamic programming, graphs, strings, and more</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>7 Invariants</h3>
+                        <p>Median loop invariants per program (3.5× DafnyBench)</p>
+                    </div>
+                </div>
+
+                <div class="benchmark-pipeline">
+                    <h3>Two-Stage Synthesis Pipeline</h3>
+                    <div class="pipeline-stages">
+                        <div class="stage">
+                            <div class="stage-number">1</div>
+                            <div class="stage-content">
+                                <h4>Program Assembly</h4>
+                                <p>Systematic combination of functions from LeetCodeDataset with controlled data flow</p>
+                                <ul>
+                                    <li>McCabe complexity filtering (>5)</li>
+                                    <li>Chain-based composition</li>
+                                    <li>Type constraint propagation</li>
+                                    <li>Test validation pipeline</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="pipeline-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="stage">
+                            <div class="stage-number">2</div>
+                            <div class="stage-content">
+                                <h4>Formal Translation</h4>
+                                <p>Incremental AST-guided transformation to verified Dafny</p>
+                                <ul>
+                                    <li>Fragment-by-fragment translation</li>
+                                    <li>Immediate verification</li>
+                                    <li>Up to 10 refinement iterations</li>
+                                    <li>47% overall success rate</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-format">
+                    <h3>Evaluation Task Format</h3>
+                    <div class="task-example">
+                        <div class="code-before-after">
+                            <div class="code-section">
+                                <h4>Given (Stripped Contracts)</h4>
+                                <pre><code class="language-java">method digitSum(n: int) returns (sum: int)
+{
+    var temp := n;
+    sum := 0;
+    while temp > 0 {
+        sum := sum + (temp % 10);
+        temp := temp / 10;
+    }
+}</code></pre>
+                            </div>
+                            <div class="arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                            <div class="code-section">
+                                <h4>Required (Complete Specification)</h4>
+                                <pre><code class="language-java">method digitSum(n: int) returns (sum: int)
+    requires n >= 0
+    ensures sum >= 0
+    ensures sum == /* digit sum of n */
+{
+    var temp := n;
+    sum := 0;
+    while temp > 0
+        invariant temp >= 0
+        invariant sum >= 0
+        decreases temp
+    {
+        sum := sum + (temp % 10);
+        temp := temp / 10;
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <p class="task-description">
+                            Models must regenerate <code>requires</code>, <code>ensures</code>, <code>reads</code>,
+                            <code>modifies</code>, and <code>decreases</code> clauses to enable verification across
+                            function boundaries.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results" class="section">
+        <div class="container">
+            <h2 class="section-title">Experimental Results</h2>
+
+            <div class="results-overview">
+                <div class="result-highlight">
+                    <h3>The Verification Collapse</h3>
+                    <p class="result-summary">
+                        Despite achieving near-perfect syntax correctness (99%), all evaluated models exhibit
+                        catastrophic verification failure, with the best model reaching only 7% verification success.
+                    </p>
+                </div>
+
+                <div class="models-tested">
+                    <h3>13 State-of-the-Art Models Evaluated</h3>
+                    <div class="model-families">
+                        <div class="model-family">
+                            <div class="family-icon openai"></div>
+                            <h4>OpenAI</h4>
+                            <ul>
+                                <li>GPT-4o</li>
+                                <li>GPT-4.1</li>
+                                <li>o4-mini</li>
+                            </ul>
+                        </div>
+                        <div class="model-family">
+                            <div class="family-icon anthropic"></div>
+                            <h4>Anthropic</h4>
+                            <ul>
+                                <li>Claude-3.5-Sonnet</li>
+                                <li>Claude-4-Sonnet</li>
+                            </ul>
+                        </div>
+                        <div class="model-family">
+                            <div class="family-icon google"></div>
+                            <h4>Google</h4>
+                            <ul>
+                                <li>Gemini-2.5-Pro</li>
+                                <li>Gemini-2.5-Flash</li>
+                            </ul>
+                        </div>
+                        <div class="model-family">
+                            <div class="family-icon deepseek"></div>
+                            <h4>DeepSeek</h4>
+                            <ul>
+                                <li>DeepSeek-R1</li>
+                                <li>DeepSeek-V3</li>
+                                <li>DeepSeek-V3.1</li>
+                            </ul>
+                        </div>
+                        <div class="model-family">
+                            <div class="family-icon alibaba"></div>
+                            <h4>Alibaba</h4>
+                            <ul>
+                                <li>Qwen2.5-Coder-32B</li>
+                                <li>Qwen3-Coder-480B</li>
+                                <li>QwQ-32B</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="performance-comparison">
+                    <h3>Performance Comparison: Single vs. Multi-Function</h3>
+                    <div class="comparison-chart">
+                        <div class="benchmark-comparison">
+                            <div class="benchmark-item">
+                                <h4>DafnyBench (Single Function)</h4>
+                                <div class="performance-bar">
+                                    <div class="bar-fill" style="width: 58%"></div>
+                                    <span class="percentage">58%</span>
+                                </div>
+                                <p>Moderate verification success on isolated functions</p>
+                            </div>
+                            <div class="vs-divider">
+                                <span>VS</span>
+                            </div>
+                            <div class="benchmark-item">
+                                <h4>DafnyComp (Multi-Function)</h4>
+                                <div class="performance-bar">
+                                    <div class="bar-fill critical" style="width: 7%"></div>
+                                    <span class="percentage">7%</span>
+                                </div>
+                                <p>Catastrophic failure on compositional tasks</p>
+                            </div>
+                        </div>
+                        <div class="degradation-stats">
+                            <div class="degradation-item">
+                                <span class="multiplier">3.2×</span>
+                                <span class="label">Function Increase</span>
+                            </div>
+                            <div class="arrow-right">→</div>
+                            <div class="degradation-item">
+                                <span class="multiplier">14.4×</span>
+                                <span class="label">Performance Decrease</span>
+                            </div>
+                            <div class="degradation-note">
+                                Super-linear complexity scaling reveals compositional breakdown
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-observations">
+                    <h3>Four Key Observations</h3>
+                    <div class="observations-grid">
+                        <div class="observation">
+                            <div class="observation-number">1</div>
+                            <h4>Universal Verification Failure</h4>
+                            <p>92-percentage-point gap between syntax and verification success across all models, independent of scale, specialization, or architecture.</p>
+                        </div>
+                        <div class="observation">
+                            <div class="observation-number">2</div>
+                            <h4>Non-linear Scaling</h4>
+                            <p>Super-linear complexity scaling suggests combinatorial specification dependencies that models fail to capture.</p>
+                        </div>
+                        <div class="observation">
+                            <div class="observation-number">3</div>
+                            <h4>Sampling Saturation</h4>
+                            <p>Verification performance plateaus by Pass@4, indicating architectural rather than search limitations.</p>
+                        </div>
+                        <div class="observation">
+                            <div class="observation-number">4</div>
+                            <h4>No Reasoning Advantage</h4>
+                            <p>Specialized reasoning models show no improvement, confirming architectural barriers rather than optimization issues.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Insights Section -->
+    <section id="insights" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Failure Analysis & Insights</h2>
+
+            <div class="insights-intro">
+                <p class="insights-description">
+                    Through systematic analysis of 900 verification failures, we identified three primary failure modes
+                    that reveal fundamental limitations in how transformers process compositional specifications.
+                </p>
+            </div>
+
+            <div class="failure-analysis">
+                <div class="failure-mode-detailed">
+                    <div class="failure-header">
+                        <div class="failure-icon-large fragility">
+                            <i class="fas fa-chain-broken"></i>
+                        </div>
+                        <div class="failure-info">
+                            <h3>Specification Fragility</h3>
+                            <div class="failure-stats">
+                                <span class="percentage">39.2%</span>
+                                <span class="count">353/900 cases</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="failure-content">
+                        <p><strong>The Domino Effect:</strong> Missing contract propagation causes cascading failures.</p>
+                        <div class="example-scenario">
+                            <h4>Example Scenario</h4>
+                            <p>A <code>digitSum</code> function missing <code>ensures result >= 0</code> appears correct in isolation
+                            but invalidates entire pipeline when output feeds downstream function expecting non-negative input.</p>
+                        </div>
+                        <div class="takeaway">
+                            <i class="fas fa-lightbulb"></i>
+                            <p><strong>Key Insight:</strong> LLMs learn specifications as local patterns rather than global contracts,
+                            lacking architectural machinery for cross-boundary reasoning.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="failure-mode-detailed">
+                    <div class="failure-header">
+                        <div class="failure-icon-large misalignment">
+                            <i class="fas fa-unlink"></i>
+                        </div>
+                        <div class="failure-info">
+                            <h3>Implementation-Proof Misalignment</h3>
+                            <div class="failure-stats">
+                                <span class="percentage">21.7%</span>
+                                <span class="count">195/900 cases</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="failure-content">
+                        <p><strong>The Independence Assumption:</strong> Code and specifications generated as independent tasks.</p>
+                        <div class="example-scenario">
+                            <h4>Example Scenario</h4>
+                            <p>Loop invariants like <code>forall k :: 0 <= k < i ==> cnt[k] >= 0</code> appear plausible
+                            but fail verification due to implementation's actual array access patterns.</p>
+                        </div>
+                        <div class="takeaway">
+                            <i class="fas fa-lightbulb"></i>
+                            <p><strong>Key Insight:</strong> Transformer attention mechanisms excel at local dependencies but struggle
+                            with bidirectional constraints between specifications and implementations.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="failure-mode-detailed">
+                    <div class="failure-header">
+                        <div class="failure-icon-large instability">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="failure-info">
+                            <h3>Reasoning Instability</h3>
+                            <div class="failure-stats">
+                                <span class="percentage">14.1%</span>
+                                <span class="count">127/900 cases</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="failure-content">
+                        <p><strong>Induction as Achilles' Heel:</strong> Failure to maintain inductive reasoning chains.</p>
+                        <div class="example-scenario">
+                            <h4>Example Scenario</h4>
+                            <p>Loop invariants break because models cannot track how program state evolves through iterations.
+                            Properties proven for base cases fail to extend inductively.</p>
+                        </div>
+                        <div class="takeaway">
+                            <i class="fas fa-lightbulb"></i>
+                            <p><strong>Key Insight:</strong> Statistical approximation is insufficient for formal verification,
+                            which demands precise inductive proofs rather than pattern matching.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="implications">
+                <h3>Broader Implications</h3>
+                <div class="implications-grid">
+                    <div class="implication">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h4>Architectural Limitation</h4>
+                        <p>Current transformer architectures lack the inductive biases necessary for compositional reasoning in formal verification.</p>
+                    </div>
+                    <div class="implication">
+                        <i class="fas fa-cogs"></i>
+                        <h4>Training Paradigm</h4>
+                        <p>Existing training methods fail to enforce consistency between code and specifications, treating them as independent generation tasks.</p>
+                    </div>
+                    <div class="implication">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Scaling Challenges</h4>
+                        <p>Simply increasing model size or compute does not address the fundamental compositional reasoning deficit.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="section">
+        <div class="container">
+            <h2 class="section-title">Resources & Downloads</h2>
+
+            <div class="download-grid">
+                <div class="download-card primary">
+                    <div class="download-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>Research Paper</h3>
+                    <p>Complete ICLR 2026 paper with detailed methodology, results, and analysis</p>
+                    <a href="assets/iclr2026_conference.pdf" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-download"></i>
+                        Download PDF
+                    </a>
+                </div>
+
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>DafnyComp Dataset</h3>
+                    <p>300 verified multi-function Dafny programs with complete specifications</p>
+                    <a href="#" class="btn btn-secondary" onclick="showComingSoon()">
+                        <i class="fas fa-download"></i>
+                        Coming Soon
+                    </a>
+                </div>
+
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3>Source Code</h3>
+                    <p>Benchmark synthesis pipeline and evaluation framework</p>
+                    <a href="#" class="btn btn-secondary" onclick="showComingSoon()">
+                        <i class="fab fa-github"></i>
+                        GitHub Repository
+                    </a>
+                </div>
+
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Evaluation Results</h3>
+                    <p>Complete results for all 13 models across all evaluation metrics</p>
+                    <a href="#" class="btn btn-secondary" onclick="showComingSoon()">
+                        <i class="fas fa-download"></i>
+                        Download Data
+                    </a>
+                </div>
+            </div>
+
+            <div class="citation-section">
+                <h3>Citation</h3>
+                <div class="citation-box">
+                    <div class="citation-content">
+                        <pre id="citation-text">@inproceedings{dafnycomp2026,
+    title={Local Success Does Not Compose: Benchmarking Large Language Models for Compositional Formal Verification},
+    author={Xu Xu and Xin Li and Xingwei Qu and Jie Fu and Binhang Yuan},
+    <!-- booktitle={International Conference on Learning Representations}, -->
+    year={2026},
+    <!-- url={https://openreview.net/forum?id=PLACEHOLDER} -->
+}</pre>
+                    </div>
+                    <button class="copy-btn" onclick="copyCitation()">
+                        <i class="fas fa-copy"></i>
+                        Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <div class="footer-logo">
+                        <i class="fas fa-check-double"></i>
+                        <span>DafnyComp</span>
+                    </div>
+                    <p>Advancing compositional formal verification research</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Resources</h4>
+                        <a href="assets/iclr2026_conference.pdf" target="_blank">Paper</a>
+                        <a href="#" onclick="showComingSoon()">Dataset</a>
+                        <a href="#" onclick="showComingSoon()">Code</a>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Related</h4>
+                        <a href="https://dafny.org/" target="_blank">Dafny</a>
+                        <a href="#benchmark">Benchmark</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 DafnyComp.</p>
+                <p>Built with ❤️ for the formal verification community</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
